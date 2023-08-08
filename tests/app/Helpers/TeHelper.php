@@ -1,4 +1,5 @@
 <?php
+
 namespace DTApi\Helpers;
 
 use Carbon\Carbon;
@@ -14,20 +15,20 @@ class TeHelper
     public static function fetchLanguageFromJobId($id)
     {
         $language = Language::findOrFail($id);
-        return $language1 = $language->language;
+        return $language->language;
     }
 
     public static function getUsermeta($user_id, $key = false)
     {
-        return $user = UserMeta::where('user_id', $user_id)->first()->$key;
-        if (!$key)
+        $user = UserMeta::where('user_id', $user_id)->first();
+
+        if (!$key) {
             return $user->usermeta()->get()->all();
-        else {
-            $meta = $user->usermeta()->where('key', '=', $key)->get()->first();
-            if ($meta)
-                return $meta->value;
-            else return '';
         }
+
+        $meta = $user->usermeta()->where('key', $key)->get()->first();
+
+        return $meta ? $meta->value : '';
     }
 
     public static function convertJobIdsInObjs($jobs_ids)
@@ -48,7 +49,7 @@ class TeHelper
         $difference = $due_time->diffInHours($created_at);
 
 
-        if($difference <= 90)
+        if ($difference <= 90)
             $time = $due_time;
         elseif ($difference <= 24) {
             $time = $created_at->addMinutes(90);
@@ -59,8 +60,5 @@ class TeHelper
         }
 
         return $time->format('Y-m-d H:i:s');
-
     }
-
 }
-
